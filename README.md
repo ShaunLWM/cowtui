@@ -12,6 +12,8 @@
 
 TUI dashboard for [BullMQ](https://docs.bullmq.io). Monitor queues, browse jobs, inspect failures, manage workers. Vim-style keybindings.
 
+![cowtui screenshot](assets/main.png)
+
 ## Quick Start
 
 ```bash
