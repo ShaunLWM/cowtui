@@ -1,20 +1,47 @@
 {
-  "name": "bullmq-tui",
-  "module": "src/index.tsx",
+  "name": "cowtui",
+  "version": "0.0.1",
   "type": "module",
-  "private": true,
+  "description": "Terminal dashboard for BullMQ queues, jobs, and workers",
+  "bin": {
+    "cowtui": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "dev": "bun run --watch src/index.tsx"
+    "start": "bun run src/index.tsx",
+    "dev": "bun run --watch src/index.tsx",
+    "build": "bun build src/index.tsx --outdir dist --target bun && printf '#!/usr/bin/env bun\\n' | cat - dist/index.js > dist/tmp && mv dist/tmp dist/index.js && chmod +x dist/index.js",
+    "prepublishOnly": "bun run build",
+    "test-bullmq": "bun run scripts/test-instance.ts",
+    "format": "bunx biome check --write src"
+  },
+  "keywords": [
+    "bullmq",
+    "tui",
+    "terminal",
+    "redis",
+    "queue",
+    "dashboard"
+  ],
+  "license": "GPL-3.0-only",
+  "author": "ShaunLWM",
+  "repository": "github:ShaunLWM/cowtui",
+  "homepage": "https://github.com/ShaunLWM/cowtui",
+  "bugs": "https://github.com/ShaunLWM/cowtui/issues",
+  "engines": {
+    "bun": ">=1.0.0"
   },
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@opentui/core": "^0.1.77",
-    "@opentui/react": "^0.1.77",
-    "react": "^19.2.4"
+    "@biomejs/biome": "2.3.14",
+    "@opentui/core": "0.1.77",
+    "@opentui/react": "0.1.77",
+    "@types/bun": "latest",
+    "@types/minimist": "1.2.5",
+    "bullmq": "5.67.3",
+    "ioredis": "5.9.2",
+    "minimist": "1.2.8",
+    "react": "19.2.4"
   }
 }

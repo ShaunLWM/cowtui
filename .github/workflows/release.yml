@@ -1,0 +1,63 @@
+name: Release to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump type
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      branch:
+        description: Branch to release from
+        required: true
+        default: main
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - uses: oven-sh/setup-bun@v2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - run: bun install
+
+      - name: Clean dist
+        run: rm -rf dist
+
+      - name: Bump version
+        run: npm version ${{ inputs.bump }} --no-git-tag-version
+
+      - run: bun run build
+
+      - name: Publish to npm
+        run: npm publish
+
+      - name: Push version bump and create release
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "release: v${VERSION}"
+          git tag "v${VERSION}"
+          git push origin ${{ inputs.branch }}
+          git push origin "v${VERSION}"
+          gh release create "v${VERSION}" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

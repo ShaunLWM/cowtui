@@ -1,16 +1,24 @@
-import { createCliRenderer, TextAttributes } from "@opentui/core";
+import { createCliRenderer } from "@opentui/core";
 import { createRoot } from "@opentui/react";
+import { App } from "./app.tsx";
+import { connectRedis, disconnectRedis } from "./lib/connection.ts";
+import { closeAllJobQueues } from "./lib/job-service.ts";
+import { closeAllQueues } from "./lib/queue-service.ts";
 
-function App() {
-  return (
-    <box alignItems="center" justifyContent="center" flexGrow={1}>
-      <box justifyContent="center" alignItems="flex-end">
-        <ascii-font font="tiny" text="OpenTUI" />
-        <text attributes={TextAttributes.DIM}>What will you build?</text>
-      </box>
-    </box>
-  );
+const renderer = await createCliRenderer({
+	exitOnCtrlC: false,
+	onDestroy: async () => {
+		await closeAllQueues();
+		await closeAllJobQueues();
+		await disconnectRedis();
+	},
+});
+
+try {
+	await connectRedis();
+} catch (e) {
+	console.error("Failed to connect to Redis:", e);
+	renderer.destroy();
 }
 
-const renderer = await createCliRenderer();
 createRoot(renderer).render(<App />);
