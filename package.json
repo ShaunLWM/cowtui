@@ -1,6 +1,6 @@
 {
   "name": "cowtui",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "description": "Terminal dashboard for BullMQ queues, jobs, and workers",
   "bin": {
