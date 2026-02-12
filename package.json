@@ -27,7 +27,10 @@
   ],
   "license": "GPL-3.0-only",
   "author": "ShaunLWM",
-  "repository": "github:ShaunLWM/cowtui",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShaunLWM/cowtui.git"
+  },
   "homepage": "https://github.com/ShaunLWM/cowtui",
   "bugs": "https://github.com/ShaunLWM/cowtui/issues",
   "engines": {
